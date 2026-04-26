@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Materials</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .profession-selector {
+            margin-bottom: 20px;
+        }
+        .material-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .material-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            cursor: grab;
+        }
+        .drop-zone {
+            border: 2px dashed #aaa;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Professional Material Management</h1>
+    <div class="profession-selector">
+        <label for="professionSelect">Choose a profession: </label>
+        <select id="professionSelect" onchange="switchProfession()">
+            <option value="blacksmith">Blacksmith</option>
+            <option value="alchemist">Alchemist</option>
+            <option value="tailor">Tailor</option>
+        </select>
+    </div>
+    <div class="material-grid" id="materialGrid"></div>
+    <div class="drop-zone" id="dropZone">Drop materials here</div>
+    
+    <script>
+        const professionMaterials = {
+            blacksmith: { grid: ['Iron', 'Steel', 'Gold', 'Silver'], map: {} },
+            alchemist: { grid: ['Potion', 'Elixir', 'Herb', 'Crystal'], map: {} },
+            tailor: { grid: ['Cloth', 'Thread', 'Button', 'Needle'], map: {} }
+        };
+        let currentProfession = 'blacksmith';
+        
+        function switchProfession() {
+            currentProfession = document.getElementById('professionSelect').value;
+            loadMaterials();
+        }
+
+        function loadMaterials() {
+            const grid = professionMaterials[currentProfession].grid;
+            const materialGrid = document.getElementById('materialGrid');
+            materialGrid.innerHTML = '';
+            grid.forEach(material => {
+                const item = document.createElement('div');
+                item.className = 'material-item';
+                item.draggable = true;
+                item.innerText = material;
+                item.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', material);
+                };
+                materialGrid.appendChild(item);
+            });
+        }
+
+        document.getElementById('dropZone').ondragover = (e) => {
+            e.preventDefault();
+        };
+
+        document.getElementById('dropZone').ondrop = (e) => {
+            e.preventDefault();
+            const material = e.dataTransfer.getData('text/plain');
+            alert(`Dropped: ${material}`);
+            // Handle the dropped material here
+        };
+
+        window.onload = () => {
+            loadMaterials();
+        };
+    </script>
+</body>
+</html>
